@@ -1,0 +1,107 @@
+@import "tailwindcss";
+
+@theme {
+  --font-cairo: "Cairo", sans-serif;
+
+  --color-brand-primary: #f45535;
+  --color-brand-secondary: #ff7d61;
+  --color-brand-dark: #0B0F19;
+  /* Deep sophisticated slate */
+  --color-brand-surface: #111827;
+  /* Slightly lighter slate for surfaces */
+  --color-brand-border: #1F2937;
+  /* Very subtle border color */
+
+  --shadow-premium: 0 4px 20px -5px rgba(0, 0, 0, 0.4);
+  --shadow-glow: 0 0 15px rgba(244, 85, 53, 0.15);
+  /* Softer glow */
+
+  --header-height: 64px;
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+  }
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-cairo);
+  background-color: var(--color-brand-dark);
+  color: white;
+  -webkit-font-smoothing: antialiased;
+  direction: rtl;
+  /* RTL for Arabic system */
+}
+
+/* Custom Scrollbar for Premium Feel */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-brand-dark);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-brand-border);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-brand-primary);
+}
+
+.glass-card {
+  background: rgba(17, 24, 39, 0.6);
+  /* brand-surface with opacity */
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.02);
+  border-radius: 16px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.premium-gradient {
+  background: linear-gradient(135deg, #f45535 0%, #ff7d61 100%);
+}
+
+@layer utilities {
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .pt-safe {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .mt-safe {
+    margin-top: env(safe-area-inset-top);
+  }
+}
+
+@media (max-width: 640px) {
+  h2 {
+    font-size: 1.5rem !important;
+  }
+
+  h3 {
+    font-size: 1.25rem !important;
+  }
+
+  .mobile-page-container {
+    padding-top: calc(var(--header-height) + 1.5rem) !important;
+  }
+}
