@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Printer, ArrowUpRight, ArrowDownLeft, DollarSign, Users, Share2 } from 'lucide-react';
+import { Printer, ArrowUpRight, ArrowDownLeft, DollarSign, Share2 } from 'lucide-react';
 import { toPng } from 'html-to-image';
 import { jsPDF } from 'jspdf';
 
 import { api } from '../lib/api';
 import type { BoxTransaction, User } from '../types';
 import { cn } from '../utils/cn';
+import { ReportHeader } from '../components/ReportHeader';
 
 type ReportType = 'OUTGOING' | 'RETURNS' | 'TOTALS';
 
@@ -122,22 +123,19 @@ export const ReportsPage: React.FC = () => {
         const elementId = `user-report-batch-${u.user.id}`;
         const element = document.getElementById(elementId);
         if (!element) return;
-
         try {
-            // Temporarily hide the share button from the capture
-            const shareBtn = element.querySelector('.share-btn') as HTMLElement;
-            if (shareBtn) shareBtn.style.display = 'none';
+            element.classList.add('pdf-export-mode');
 
             const dataUrl = await toPng(element, { 
                 pixelRatio: 2, 
                 backgroundColor: '#ffffff',
                 style: {
                     transform: 'none',
-                    margin: '0'
+                    margin: '0',
                 }
             });
             
-            if (shareBtn) shareBtn.style.display = 'flex';
+            element.classList.remove('pdf-export-mode');
 
             const pdf = new jsPDF({
                 orientation: 'portrait',
@@ -337,8 +335,9 @@ export const ReportsPage: React.FC = () => {
                                 {userStatements.length === 0 ? (
                                     <div className="text-center py-20 text-gray-500 font-bold">لا يوجد أرصدة لهذه الفترة.</div>
                                 ) : (
-                                    userStatements.map((u, index) => (
+                                    userStatements.map(u => (
                                         <div key={u.user.id} id={`user-report-batch-${u.user.id}`} className="print-break print:mb-0 mb-16 border-b-4 border-brand-primary/20 print:border-none pb-8 pt-4 px-4 bg-brand-dark/20 sm:bg-transparent rounded-xl">
+                                            <ReportHeader />
                                             <div className="flex justify-between items-end border-b-2 border-white/20 print:border-black pb-4 mb-6 relative">
                                                 <div>
                                                     <h2 className="text-2xl font-bold print:text-black mb-1">كشف حساب مستخدم</h2>
@@ -429,6 +428,7 @@ export const ReportsPage: React.FC = () => {
                                         const userTx = outgoingTx.filter(tx => tx.userCode === user.shortCode);
                                         return (
                                             <div key={user.id} className="print-break print:mb-0 mb-12 border-b-2 border-brand-primary/20 print:border-none pb-6 pt-2">
+                                                <ReportHeader />
                                                 <div className="flex justify-between items-end border-b-2 border-brand-border print:border-black pb-3 mb-4">
                                                     <div>
                                                         <h2 className="text-xl font-bold print:text-black mb-1">تقرير سحب مخالات</h2>
@@ -469,6 +469,7 @@ export const ReportsPage: React.FC = () => {
                                         const userTx = returnTx.filter(tx => tx.userCode === user.shortCode);
                                         return (
                                             <div key={user.id} className="print-break print:mb-0 mb-12 border-b-2 border-brand-primary/20 print:border-none pb-6 pt-2">
+                                                <ReportHeader />
                                                 <div className="flex justify-between items-end border-b-2 border-brand-border print:border-black pb-3 mb-4">
                                                     <div>
                                                         <h2 className="text-xl font-bold print:text-black mb-1">تقرير مرتجعات مخالات</h2>

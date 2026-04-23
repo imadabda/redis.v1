@@ -3,7 +3,7 @@
 // في بيئة التطوير المحلية سيستخدم السيرفر المحلي للـ PHP
 const API_BASE_URL = import.meta.env.PROD
     ? '/api'
-    : 'http://192.168.1.36:8000/api';
+    : `http://${window.location.hostname}:8000/api`;
 
 export const api = {
     async get<T>(endpoint: string): Promise<T> {

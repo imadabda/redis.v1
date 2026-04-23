@@ -4,7 +4,8 @@ import { jsPDF } from 'jspdf';
 import { Plus, User as UserIcon, Search, Trash2, X, Check, Printer, Share2 } from 'lucide-react';
 import type { User, BoxTransaction as LocalTransaction } from '../types';
 import { api } from '../lib/api';
-import { cn } from '../utils/cn';
+
+import { ReportHeader } from '../components/ReportHeader';
 
 export const UserReportModal: React.FC<{ user: User, onClose: () => void }> = ({ user, onClose }) => {
     const [startDate, setStartDate] = useState('');
@@ -96,20 +97,18 @@ export const UserReportModal: React.FC<{ user: User, onClose: () => void }> = ({
         if (!element) return;
 
         try {
-            // Temporarily hide the action buttons from the capture
-            const actionsDiv = element.querySelector('.print\\:hidden') as HTMLElement;
-            if (actionsDiv) actionsDiv.style.display = 'none';
+            element.classList.add('pdf-export-mode');
 
             const dataUrl = await toPng(element, { 
                 pixelRatio: 2, 
                 backgroundColor: '#ffffff',
                 style: {
                     transform: 'none',
-                    margin: '0'
+                    margin: '0',
                 }
             });
             
-            if (actionsDiv) actionsDiv.style.display = 'flex';
+            element.classList.remove('pdf-export-mode');
 
             const pdf = new jsPDF({
                 orientation: 'portrait',
@@ -181,7 +180,8 @@ export const UserReportModal: React.FC<{ user: User, onClose: () => void }> = ({
                 }
             `}} />
             <div id="user-modal-content" className="glass-card w-full max-w-2xl bg-brand-dark rounded-2xl shadow-2xl flex flex-col max-h-[95vh] print:shadow-none print:border-none print:bg-white print:text-black print:max-w-full print:h-auto print:max-h-none print:rounded-none print-section relative pb-4">
-                <div className="p-6 border-b border-brand-border flex flex-col md:flex-row justify-between items-start md:items-center gap-4 print:border-b-2 print:border-black">
+                <ReportHeader />
+                <div className="p-6 border-b border-brand-border flex flex-col md:flex-row justify-between items-start md:items-center gap-4 print:border-b-2 print:border-black hide-on-print">
                     <div>
                         <h2 className="text-2xl font-bold">كشف حساب مستخدم</h2>
                         <p className="text-gray-400 print:text-gray-600">الاسم: {user.name} | الرمز: {user.shortCode}</p>
