@@ -15,8 +15,11 @@ $username = 'u515868829_ardis_admin';
 $password = 'ArdisPremium2026!';
 
 $is_simulation = false;
+$force_demo_mode = true; // Set to true to show dummy data on Hostinger
 
 try {
+    if ($force_demo_mode) throw new PDOException("Demo mode active");
+    
     $conn = new PDO("mysql:host=$host;dbname=$db_name;charset=utf8", $username, $password);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch(PDOException $e) {
