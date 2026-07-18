@@ -136,7 +136,9 @@ export const OutgoingPage: React.FC = () => {
                 </div>
                 <div className="flex items-center gap-2 text-gray-400 bg-white/5 px-4 py-2 rounded-xl border border-white/5 w-fit sm:w-auto">
                     <Calendar size={18} />
-                    <span className="text-sm font-medium">٢٨ فبراير، ٢٠٢٦</span>
+                    <span className="text-sm font-medium">
+                        {new Intl.DateTimeFormat('ar-EG', { day: 'numeric', month: 'long', year: 'numeric' }).format(new Date())}
+                    </span>
                 </div>
             </div>
 
