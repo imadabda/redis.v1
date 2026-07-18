@@ -15,7 +15,7 @@ $username = 'u515868829_ardis_admin';
 $password = 'ArdisPremium2026!';
 
 $is_simulation = false;
-$force_demo_mode = true; // Set to true to show dummy data on Hostinger
+$force_demo_mode = false; // Set to true to show dummy data on Hostinger
 
 try {
     if ($force_demo_mode) throw new PDOException("Demo mode active");
