@@ -57,6 +57,13 @@ export const ReturnsPage: React.FC = () => {
     const [customDate, setCustomDate] = useState('');
     const [showCustomDate, setShowCustomDate] = useState(false);
 
+    const [showSuggestions, setShowSuggestions] = useState(false);
+    const suggestions = users.filter(u => 
+        userCode && 
+        (u.name.toLowerCase().includes(userCode.toLowerCase()) || 
+         u.shortCode.toLowerCase().includes(userCode.toLowerCase()))
+    );
+
     const userCodeInputRef = useRef<HTMLInputElement>(null);
     const [isSuccess, setIsSuccess] = useState(false);
 
@@ -152,26 +159,46 @@ export const ReturnsPage: React.FC = () => {
                         <h3 className="text-xl font-bold">إضافة مرتجع</h3>
 
                         <div className="flex flex-col gap-4">
-                            <div className="flex flex-col gap-2">
+                            <div className="flex flex-col gap-2 relative">
                                 <label className="text-xs text-gray-500 font-bold uppercase mr-1">رمز أو اسم المستخدم</label>
                                 <input
                                     ref={userCodeInputRef}
-                                    list="users-list"
                                     type="text"
                                     value={userCode}
                                     onChange={(e) => setUserCode(e.target.value)}
-                                    placeholder="أدخل الرمز أو الاسم"
+                                    onFocus={() => setShowSuggestions(true)}
+                                    onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
+                                    placeholder="أدخل الرمز أو الاسم..."
                                     required
                                     className={cn(
-                                        "bg-black/20 border border-white/5 rounded-xl px-4 py-3 focus:outline-none focus:border-transparent transition-all font-mono text-xl uppercase",
+                                        "bg-black/20 border border-white/5 rounded-xl px-4 py-3 focus:outline-none focus:border-transparent transition-all font-mono text-xl",
                                         currentUser ? "focus:ring-2 focus:ring-green-500/50 border-green-500/30" : (userCode ? "focus:ring-2 focus:ring-red-500/50 border-red-500/30" : "focus:ring-2 focus:ring-blue-500/50")
                                     )}
                                 />
-                                <datalist id="users-list">
-                                    {users.map(u => (
-                                        <option key={u.id} value={u.name}>{u.shortCode}</option>
-                                    ))}
-                                </datalist>
+                                <AnimatePresence>
+                                    {showSuggestions && userCode && !currentUser && suggestions.length > 0 && (
+                                        <motion.div 
+                                            initial={{ opacity: 0, y: -10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, y: -10 }}
+                                            className="absolute top-[84px] left-0 right-0 bg-[#1a2235] border border-white/10 rounded-xl overflow-hidden z-50 shadow-2xl max-h-48 overflow-y-auto"
+                                        >
+                                            {suggestions.map(u => (
+                                                <div 
+                                                    key={u.id} 
+                                                    className="px-4 py-3 hover:bg-white/10 cursor-pointer flex justify-between items-center transition-colors border-b border-white/5 last:border-0"
+                                                    onClick={() => {
+                                                        setUserCode(u.name);
+                                                        setShowSuggestions(false);
+                                                    }}
+                                                >
+                                                    <span className="font-bold">{u.name}</span>
+                                                    <span className="text-blue-400 text-xs bg-blue-500/10 px-2 py-1 rounded-md font-mono font-bold">{u.shortCode}</span>
+                                                </div>
+                                            ))}
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
                                 {userCode && (
                                     <div className="text-sm px-2 mt-1">
                                         {currentUser ? (
