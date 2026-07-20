@@ -66,7 +66,10 @@ export const ReturnsPage: React.FC = () => {
     }, []);
 
     // Live Validation
-    const currentUser = users.find(u => u.shortCode.toUpperCase() === userCode.toUpperCase());
+    const currentUser = users.find(u => 
+        u.shortCode.toUpperCase() === userCode.toUpperCase() || 
+        u.name === userCode
+    );
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -150,19 +153,25 @@ export const ReturnsPage: React.FC = () => {
 
                         <div className="flex flex-col gap-4">
                             <div className="flex flex-col gap-2">
-                                <label className="text-xs text-gray-500 font-bold uppercase mr-1">رمز المستخدم</label>
+                                <label className="text-xs text-gray-500 font-bold uppercase mr-1">رمز أو اسم المستخدم</label>
                                 <input
                                     ref={userCodeInputRef}
+                                    list="users-list"
                                     type="text"
                                     value={userCode}
                                     onChange={(e) => setUserCode(e.target.value)}
-                                    placeholder="أدخل الرمز"
+                                    placeholder="أدخل الرمز أو الاسم"
                                     required
                                     className={cn(
                                         "bg-black/20 border border-white/5 rounded-xl px-4 py-3 focus:outline-none focus:border-transparent transition-all font-mono text-xl uppercase",
                                         currentUser ? "focus:ring-2 focus:ring-green-500/50 border-green-500/30" : (userCode ? "focus:ring-2 focus:ring-red-500/50 border-red-500/30" : "focus:ring-2 focus:ring-blue-500/50")
                                     )}
                                 />
+                                <datalist id="users-list">
+                                    {users.map(u => (
+                                        <option key={u.id} value={u.name}>{u.shortCode}</option>
+                                    ))}
+                                </datalist>
                                 {userCode && (
                                     <div className="text-sm px-2 mt-1">
                                         {currentUser ? (
